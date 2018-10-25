@@ -18,13 +18,32 @@ def extract_payload():
 
     return pktlist
 
+def length_block():
+
+    parser = h.sequence(h.and_(h.__length_value(h.uint8(), h.many(h.ch_range('\x00'), '\xff'))))
+    return parser
+
+def sequence_parser():
+    parser = h.sequence(
+        h.ch('\x01'),
+        h.uint16(),
+        h.uint32(),
+        h.uint16(),
+        h.uint16(),
+        h.many1(h.ch_range('\x00', '\xff')),
+        h.end_p()
+    )
+    return parser
+
 def init_parser():
-    return h.sequence()
+    return h.sequence(h.many1(h.choice(sequence_parser(), length_block())))
 
 def parse(string):
     parser = init_parser()
+    print(repr(string))
     result = parser.parse(string)
-    if result != None: #and result[1] == len(string):
+    print(result)
+    if result != None and result[-1][-1] == '\xce':
         # print(repr(result))
         # print(repr(string))
         return True
@@ -37,9 +56,7 @@ def main():
         if(parse(payload_list[i])):
             print("success! checking next one...")
             continue
-        else:
-            print("Parser() returned false; the pcap file is not valid.")
-            return
+
     print("All strings passed Hammers check!")
     return
 main()
