@@ -20,7 +20,7 @@ def extract_payload():
 
 def length_block():
 
-    parser = h.sequence(h.and_(h.__length_value(h.uint8(), h.many(h.ch_range('\x00'), '\xff'))))
+    parser = h.sequence(h.and_(h._h_length_value(h.uint8(), h.many(h.ch_range('\x00', '\xff')))))
     return parser
 
 def sequence_parser():
