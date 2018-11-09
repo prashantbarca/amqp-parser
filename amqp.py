@@ -48,6 +48,90 @@ def connection_tune_parser():
     )
     return parser
 
+def connection_tune_ok_parser():
+    parser = h.sequence(
+        h.ch('\x01'), # type
+        h.uint16(), # Channel
+        h.uint32(), # Length
+        h.token("\x00\x0a"), # Class
+        h.token("\x00\x1f"), # Method
+
+        # Arguments
+        h.uint16(), # Channel max
+        h.uint32(), # Frame max
+        h.uint16(), # Heartbeat
+        h.end_p()
+    )
+    return parser
+
+def connection_open_vhost_parser():
+    parser = h.sequence(
+        h.ch('\x01'), # type
+        h.uint16(), # Channel
+        h.uint32(), # Length
+        h.token("\x00\x0a"), # Class
+        h.token("\x00\x28"), # Method
+
+        # Arguments
+        h.uint16(), # Virtual-Host
+        h.uint32(), # Frame max
+        h.uint16(), # Capabilities
+        h.end_p()
+    )
+    return parser
+
+def connection_open_vhost_ok_parser():
+    parser = h.sequence(
+        h.ch('\x01'), # type
+        h.uint16(), # Channel
+        h.uint32(), # Length
+        h.token("\x00\x0a"), # Class
+        h.token("\x00\x29"), # Method
+
+        # Arguments
+        h.uint8() # Known-Host
+    )
+    return parser
+
+def channel_open_parser():
+    parser = h.sequence(
+        h.ch('\x01'), # type
+        h.uint16(), # Channel
+        h.uint32(), # Length
+        h.token("\x00\x14"), # Class
+        h.token("\x00\x0a"), # Method
+
+        # Arguments
+        h.uint8() # Out-of-bounds
+    )
+    return parser
+
+def channel_open_ok_parser():
+    parser = h.sequence(
+        h.ch('\x01'), # type
+        h.uint16(), # Channel
+        h.uint32(), # Length
+        h.token("\x16\x28"), # Class
+        h.token("\x00\x0b"), # Method
+
+        # Arguments
+        h.uint32() # Channel-Id
+    )
+    return parser
+
+def queue_declare_parser():
+    parser = h.sequence(
+        h.ch('\x01'), # type
+        h.uint16(), # Channel
+        h.uint32(), # Length
+        h.token("\x16\x28"), # Class
+        h.token("\x00\x0b"), # Method
+
+        # Arguments
+        h.uint32() # Channel-Id
+    )
+    return parser
+
 def init_parser():
     #return h.sequence(h.many1(h.choice(sequence_parser(), length_block())))
     #return length_block()
