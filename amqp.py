@@ -20,7 +20,7 @@ def extract_payload():
 
 def length_block():
 
-    parser = h.sequence(h.and_(h.__length_value(h.uint8(), h.many(h.ch_range('\x00'), '\xff'))))
+    parser = h.sequence(h.and_(h.__length_value(h.uint32(), h.many(h.ch_range('\x00'), '\xff'))))
     return parser
 
 def sequence_parser():
@@ -57,6 +57,6 @@ def main():
             print("success! checking next one...")
             continue
 
-    print("All strings passed Hammers check!")
+    print("All strings went through Hammers check!")
     return
 main()
