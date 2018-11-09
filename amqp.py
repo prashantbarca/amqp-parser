@@ -18,32 +18,47 @@ def extract_payload():
 
     return pktlist
 
+
+# h.token("\x00\x0a")
 def length_block():
 
-    parser = h.sequence(h.and_(h.__length_value(h.uint32(), h.many(h.ch_range('\x00'), '\xff'))))
+
+    parser = h.sequence(
+    h.ch('\x01'),
+    h.uint16(),
+    h.and_(h._h_length_value(h.uint32(), h.ch_range('\x00', '\xff'))),
+    h.uint32(),
+    h.many(h.ch_range('\x00', '\xff')),
+    h.end_p())
     return parser
 
-def sequence_parser():
+def connection_tune_parser():
     parser = h.sequence(
-        h.ch('\x01'),
-        h.uint16(),
-        h.uint32(),
-        h.uint16(),
-        h.uint16(),
-        h.many1(h.ch_range('\x00', '\xff')),
+        h.ch('\x01'), # type
+        h.uint16(), # Channel
+        h.uint32(), # Length
+        h.token("\x00\x0a"), # Class
+        h.token("\x00\x1e"), # Method
+
+        # Arguments
+        h.uint16(), # Channel max 
+        h.uint32(), # Frame max
+        h.uint16(), # Heartbeat
         h.end_p()
     )
     return parser
 
 def init_parser():
-    return h.sequence(h.many1(h.choice(sequence_parser(), length_block())))
+    #return h.sequence(h.many1(h.choice(sequence_parser(), length_block())))
+    #return length_block()
+    return connection_tune_parser()
 
 def parse(string):
     parser = init_parser()
-    print(repr(string))
-    result = parser.parse(string)
+    print(repr(string[0:-1]))
+    result = parser.parse(string[0:-1])
     print(result)
-    if result != None and result[-1][-1] == '\xce':
+    if result != None:
         # print(repr(result))
         # print(repr(string))
         return True
