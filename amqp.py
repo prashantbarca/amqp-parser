@@ -74,7 +74,7 @@ def connection_open_vhost_parser():
 
         # Arguments
         h.uint16(), # Virtual-Host
-        h.token("\x00\x00"),
+        h.token("\x00\x00"), # most likely going to change this according to the message
         h.end_p()
     )
     return parser
@@ -88,7 +88,7 @@ def connection_open_vhost_ok_parser():
         h.token("\x00\x29"), # Method
 
         # Arguments
-        h.ch('\x00'),# Known-Host
+        h.ch('\x00'),# Known-Host # most likely going to change this according to the message
         h.end_p()
     )
     return parser
@@ -132,6 +132,10 @@ def queue_declare_parser():
         # Arguments
         h.uint16(), # Ticket
         # how do you parse that long message?#Queue
+        h.many(h.ch_range('\x00', '\xff')),
+        """
+        When you parse this out... (, ,, , 0L, ('','','',''))
+        """
         h.end_p()
     )
     return parser
@@ -243,10 +247,28 @@ def connection_close_ok_parser():
     )
     return parser
 
+def parse_message():
+    # this function will take the argument of a message and parse the message to see what is in the message itself
+    return
+
 def init_parser():
-    #return h.sequence(h.many1(h.choice(sequence_parser(), length_block())))
-    #return length_block()
-    return connection_open_vhost_parser()
+    return h.sequence(h.many1(h.choice(
+        sequence_parser(),
+        length_block(),
+        connection_tune_parser(),
+        connection_tune_ok_parser(),
+        connection_open_vhost_parser(),
+        channel_open_parser(),
+        channel_open_ok_parser(),
+        queue_declare_parser(),
+        queue_declare_ok_parser(),
+        basic_consume_parser(),
+        basic_consume_ok_parser(),
+        channel_close_parser(),
+        channel_close_ok_parser(),
+        connection_close_parser(),
+        connection_close_ok_parser()
+    )))
 
 def parse(string):
     parser = init_parser()
