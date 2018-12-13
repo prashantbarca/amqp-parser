@@ -133,9 +133,7 @@ def queue_declare_parser():
         h.uint16(), # Ticket
         # how do you parse that long message?#Queue
         h.many(h.ch_range('\x00', '\xff')),
-        """
-        When you parse this out... (, ,, , 0L, ('','','',''))
-        """
+        #When you parse this out... (, ,, , 0L, ('','','',''))
         h.end_p()
     )
     return parser
@@ -150,8 +148,9 @@ def queue_declare_ok_parser():
 
         # Arguments
         #how do you parse that long message? #Queue
-        h.unint32(), # message-count
-        h.unint32(), # consumer-count
+        h.many(h.ch_range('\x00', '\xff')),
+        h.uint32(), # message-count
+        h.uint32(), # consumer-count
         h.end_p()
     )
     return parser
@@ -167,6 +166,7 @@ def basic_consume_parser():
         # Arguments
         h.uint16(), # Ticket
         # how do you parse that long message? #Queue
+        parse_message(h.many(h.ch_range('\x00', '\xff'))),
         # consumer-tag
         h.end_p()
     )
@@ -247,32 +247,32 @@ def connection_close_ok_parser():
     )
     return parser
 
-def parse_message():
-    # this function will take the argument of a message and parse the message to see what is in the message itself
-    return
+def parse_message(message):
+    parser = h.sequence(message)
+    
+    return parser
 
 def init_parser():
     return h.sequence(h.many1(h.choice(
-        sequence_parser(),
-        length_block(),
-        connection_tune_parser(),
-        connection_tune_ok_parser(),
-        connection_open_vhost_parser(),
-        channel_open_parser(),
-        channel_open_ok_parser(),
-        queue_declare_parser(),
-        queue_declare_ok_parser(),
-        basic_consume_parser(),
-        basic_consume_ok_parser(),
-        channel_close_parser(),
-        channel_close_ok_parser(),
-        connection_close_parser(),
-        connection_close_ok_parser()
+        #length_block(),
+        #connection_tune_parser(),
+        #connection_tune_ok_parser(),
+        #connection_open_vhost_parser(),
+        #channel_open_parser(),
+        #channel_open_ok_parser(),
+        #queue_declare_parser(),
+        #queue_declare_ok_parser(),
+        basic_consume_parser()
+        #basic_consume_ok_parser(),
+        #channel_close_parser(),
+        #channel_close_ok_parser(),
+        #connection_close_parser(),
+        #connection_close_ok_parser()
     )))
 
 def parse(string):
     parser = init_parser()
-    print(repr(string[0:-1]))
+    #print(repr(string[0:-1]))
     result = parser.parse(string[0:-1])
     print(result)
     if result != None:
@@ -286,10 +286,10 @@ def main():
     payload_list = extract_payload()
     for i in range(len(payload_list)):
         if(parse(payload_list[i])):
-            print("!------ success! checking next one... ----!")
+            print("\n!------ success! checking next one... ----!\n")
             continue
         else:
-            print("did not pass. Checking next one..")
+            print("\ndid not pass. Checking next one..\n")
             continue
 
     print("All strings went through Hammers check!")
