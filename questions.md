@@ -6,3 +6,4 @@
 - is the sensor ID's consistant?
   - If not, will each event have the similar endings to the sensorID? (i.e. xxx.0.1 or xxx.rtd)
 - Are the ranges similar to what we would get from any payloaddata file?
+- When is the expected testing date?

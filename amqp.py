@@ -32,6 +32,29 @@ def length_block():
     h.end_p())
     return parser
 
+def connection_start_parser():
+    parser = h.sequence(
+        h.ch('\x01'),  # type
+        h.uint16(),  # Channel
+        h.uint32(),  # Length
+        h.token("\x00\x0a"),  # Class
+        h.token("\x00\x0a"),  # Method
+        h.end_p()
+    )
+    return parser
+
+
+def connection_start_ok_parser():
+    parser = h.sequence(
+        h.ch('\x01'),  # type
+        h.uint16(),  # Channel
+        h.uint32(),  # Length
+        h.token("\x00\x0a"),  # Class
+        h.token("\x00\x0b"),  # Method
+        h.end_p()
+    )
+    return parser
+
 def connection_tune_parser():
     parser = h.sequence(
         h.ch('\x01'), # type
@@ -149,8 +172,8 @@ def queue_declare_ok_parser():
         # Arguments
         #how do you parse that long message? #Queue
         h.many(h.ch_range('\x00', '\xff')),
-        h.uint32(), # message-count
-        h.uint32(), # consumer-count
+        #h.uint32(), # message-count
+        #h.uint32(), # consumer-count
         h.end_p()
     )
     return parser
@@ -166,7 +189,7 @@ def basic_consume_parser():
         # Arguments
         h.uint16(), # Ticket
         # how do you parse that long message? #Queue
-        parse_message(h.many(h.ch_range('\x00', '\xff'))),
+        h.many(h.ch_range('\x00', '\xff')),
         # consumer-tag
         h.end_p()
     )
@@ -185,6 +208,29 @@ def basic_consume_ok_parser():
         h.end_p()
     )
     return parser
+
+def basic_publish_parser():
+    parser = h.sequence(
+        h.ch('\x01'),  # type
+        h.uint16(),  # Channel
+        h.uint32(),  # Length
+        h.token("\x00\x3c"),  # Class
+        h.token("\x00\x28"),  # Method
+        h.end_p()
+    )
+    return parser
+
+def basic_deliver_parser():
+    parser = h.sequence(
+        h.ch('\x01'),  # type
+        h.uint16(),  # Channel
+        h.uint32(),  # Length
+        h.token("\x00\x3c"),  # Class
+        h.token("\x00\x3c"),  # Method
+        h.end_p()
+    )
+    return parser
+
 
 def channel_close_parser():
     parser = h.sequence(
@@ -247,37 +293,39 @@ def connection_close_ok_parser():
     )
     return parser
 
-def parse_message(message):
-    parser = h.sequence(message)
-    
-    return parser
-
 def init_parser():
     return h.sequence(h.many1(h.choice(
-        #length_block(),
-        #connection_tune_parser(),
-        #connection_tune_ok_parser(),
-        #connection_open_vhost_parser(),
-        #channel_open_parser(),
-        #channel_open_ok_parser(),
-        #queue_declare_parser(),
-        #queue_declare_ok_parser(),
-        basic_consume_parser()
-        #basic_consume_ok_parser(),
-        #channel_close_parser(),
-        #channel_close_ok_parser(),
-        #connection_close_parser(),
-        #connection_close_ok_parser()
+        length_block(),
+        connection_start_parser(),
+        connection_start_ok_parser(),
+        connection_tune_parser(),
+        connection_tune_ok_parser(),
+        connection_open_vhost_parser(),
+        channel_open_parser(),
+        channel_open_ok_parser(),
+        queue_declare_parser(),
+        queue_declare_ok_parser(),
+        basic_consume_parser(),
+        basic_consume_ok_parser(),
+        basic_publish_parser(),
+        basic_deliver_parser(),
+        channel_close_parser(),
+        channel_close_ok_parser(),
+        connection_close_parser(),
+        connection_close_ok_parser()
     )))
 
 def parse(string):
     parser = init_parser()
-    #print(repr(string[0:-1]))
     result = parser.parse(string[0:-1])
-    print(result)
     if result != None:
-        # print(repr(result))
-        # print(repr(string))
+        if result[0][0][2] >= 10 and result[0][0][2] <= 500:
+           for i in range(len(result[0][0][3])):
+            if result[0][0][3][i]:
+                print(result[0][0][3][i])
+                continue
+            else:
+                return False
         return True
     else:
         return False
@@ -287,11 +335,17 @@ def main():
     for i in range(len(payload_list)):
         if(parse(payload_list[i])):
             print("\n!------ success! checking next one... ----!\n")
+            """** check each message for a hex code that states its gonna have a string (figure out what messages are you interested in
+             and have it in a way to check the that are interesting """
             continue
         else:
+
             print("\ndid not pass. Checking next one..\n")
             continue
 
     print("All strings went through Hammers check!")
     return
+
 main()
+
+# the way to get into a string or a long message is to use brackets
