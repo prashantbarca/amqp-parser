@@ -53,12 +53,13 @@ def init_parser():
         #envelope_parser,
         #measurementDevice_parser,
         #sensors_parser,
-        schemaVersion_parser
+        schemaVersion_parser()
     )))
 
 def parse(string):
     parser = init_parser()
-    result = parser.parse(string[0])
+    print(repr(string))
+    result = parser.parse(string)
     print(result)
     if result != None:
         return True
@@ -67,7 +68,8 @@ def parse(string):
 
 def main():
     payload_list = openPayloadData('jsonpayloaddata.json')
-    if(parse(payload_list["schemaVersion"])):
+    print(repr(payload_list["schemaVersion"]))
+    if (parse(str(payload_list["schemaVersion"]))):
         print("\n!------ success! checking next one... ----!\n")
         #continue
     else:

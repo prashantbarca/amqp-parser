@@ -1,0 +1,17 @@
+body, html {
+    font-family: "Roboto", sans-serif;
+    background: linear-gradient(to bottom,blue 0%,white 40%,black 100%);
+    height: 100%;
+  }
+
+  .logo {
+    background-image: url('../assets/tree.jpg');
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  .active {
+    color: pink;
+}
