@@ -2,7 +2,11 @@
 import { connect } from 'react-redux';
 import '../style.scss';
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Row,
+} from 'react-bootstrap';
 
 class ButtonPanel extends React.Component {
   onPress8 = () => {
@@ -24,27 +28,43 @@ class ButtonPanel extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.onPress8}>
+        <Row>
+          <Col xs={12}>
+            <Button onClick={this.onPress8}>
             add h.uint8
-        </Button>
-        <Button onClick={this.onPress16}>
+            </Button>
+          </Col>
+          <Col xs={12}>
+            <Button onClick={this.onPress16}>
             add h.int16
-        </Button>
-        <Button onClick={this.onPress32}>
+            </Button>
+          </Col>
+          <Col xs={12}>
+            <Button onClick={this.onPress32}>
             add uint32
-        </Button>
-        <Button onClick={this.onPressCh}>
+            </Button>
+          </Col>
+          <Col xs={12}>
+            <Button onClick={this.onPressCh}>
             add h.ch
-        </Button>
-        <Button onClick={this.onPressCh}>
+            </Button>
+            <Col xs={12}>
+              <Button onClick={this.onPressCh}>
             add h.ch_range
-        </Button>
-        <Button onClick={this.onPressCh}>
+              </Button>
+            </Col>
+            <Col xs={12}>
+              <Button onClick={this.onPressCh}>
             add h.int_range
-        </Button>
-        <Button onClick={this.onPressCh}>
+              </Button>
+            </Col>
+            <Col xs={12}>
+              <Button onClick={this.onPressCh}>
             add h.token
-        </Button>
+              </Button>
+            </Col>
+          </Col>
+        </Row>
       </div>
     );
   }

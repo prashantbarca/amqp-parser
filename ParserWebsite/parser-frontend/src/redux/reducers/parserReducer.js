@@ -6,23 +6,16 @@ const initialState = {
   current: {},
 };
 
-const PostsReducer = (
+const ParserReducer = (
   state = initialState, action,
 ) => {
   switch (action.type) {
-    case ActionTypes.FETCH_POSTS: {
-      return (Object.assign({}, state, {
-        all: action.payload,
-      }));
-    }
-    case ActionTypes.FETCH_POST: {
-      return (Object.assign({}, state, {
-        current: action.payload,
-      }));
+    case ActionTypes.ALL_PARSERS: {
+      return { ...state, all: action.payload };
     }
     default:
       return state;
   }
 };
 
-export default PostsReducer;
+export default ParserReducer;

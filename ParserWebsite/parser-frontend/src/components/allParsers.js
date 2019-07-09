@@ -5,15 +5,16 @@ import '../style.scss';
 import React from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import { fetchPosts } from '../actions/index';
+import { addParser } from '../redux/actions/index';
 
 class AllParsers extends React.Component {
   constructor(props) {
     super(props);
   }
 
-  // componentDidMount() {
-  // }
+  componentDidMount() {
+    addParser();
+  }
 
   renderPosts() {
     return this.props.all.map((post) => {
@@ -60,4 +61,4 @@ const mapStateToProps = (state) => {
 };
 
 
-export default withRouter(connect(mapStateToProps, null)(AllParsers));
+export default withRouter(connect(mapStateToProps, {})(AllParsers));

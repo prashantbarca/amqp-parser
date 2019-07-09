@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import React from 'react';
 import Main from './mainPanel';
+import ParserPanel from './parserPanel';
 
 class App extends React.Component {
   render() {
@@ -13,6 +14,7 @@ class App extends React.Component {
         <div>
           <Switch>
             <Route exact path="/" component={Main} />
+            <Route path="/add" component={ParserPanel} />
           </Switch>
         </div>
       </Router>
