@@ -3,31 +3,25 @@
 
 import '../style.scss';
 import React from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addParser } from '../redux/actions/index';
 
 class AllParsers extends React.Component {
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
-    addParser();
-  }
-
-  renderPosts() {
-    return this.props.all.map((post) => {
+  renderParser = () => {
+    console.log(typeof this.props.all);
+    return this.props.all.map((parser) => {
       return (
-        <NavLink to={`/posts/${post.id}`} key={post.id}>
-          <div className="card m-2">
-            <div className="card-body">
-              <p className="card-text"> {post.Name}</p>
-              <p className="card-text"> {post.btyes}</p>
-              <p className="card-text">{post.type}</p>
-            </div>
+        <div className="card m-2">
+          <div className="card-body">
+            <p className="card-text"> {parser.name}</p>
+            <p className="card-text">{parser.type}</p>
+            <p className="card-text"> {parser.bytes}</p>
           </div>
-        </NavLink>
+        </div>
       );
     });
   }
@@ -42,9 +36,16 @@ class AllParsers extends React.Component {
       );
     } else {
       return (
-        <div className="m-4">
-          <div className="row">
-            {this.renderPosts()}
+        <div>
+          <div className="m-4">
+            <div className="row">
+              {this.renderParser()}
+            </div>
+          </div>
+          <div>
+            <button type="button">
+            Create code
+            </button>
           </div>
         </div>
       );
@@ -61,4 +62,4 @@ const mapStateToProps = (state) => {
 };
 
 
-export default withRouter(connect(mapStateToProps, {})(AllParsers));
+export default withRouter(connect(mapStateToProps, null)(AllParsers));

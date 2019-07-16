@@ -25,10 +25,6 @@ class ParserPanel extends React.Component {
     });
   }
 
-  addPost = () => {
-
-  };
-
   render() {
     return (
       <div className="container">

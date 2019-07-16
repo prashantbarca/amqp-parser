@@ -7,22 +7,23 @@ import {
   Col,
   Row,
 } from 'react-bootstrap';
+import { addParser } from '../redux/actions';
 
 class ButtonPanel extends React.Component {
   onPress8 = () => {
-    console.log('hello world');
+    this.props.addParser('uint8');
   }
 
   onPress16 = () => {
-    console.log('hello world');
+    this.props.addParser('uint16');
   }
 
   onPress32 = () => {
-    console.log('hello world');
+    this.props.addParser('uint32');
   }
 
   onPressCh = () => {
-    console.log('hello world');
+    this.props.addParser('h.ch');
   }
 
   render() {
@@ -70,4 +71,4 @@ class ButtonPanel extends React.Component {
   }
 }
 
-export default connect(null, null)(ButtonPanel);
+export default connect(null, { addParser })(ButtonPanel);

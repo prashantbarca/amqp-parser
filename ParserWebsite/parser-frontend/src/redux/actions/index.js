@@ -12,8 +12,13 @@ export function authError(error) {
   };
 }
 
-export function addParser(parser) {
+export function addParser(parserType) {
   return (dispatch) => {
+    const parser = {
+      name: '',
+      type: '',
+      bytes: parserType,
+    };
     dispatch({ type: ActionTypes.ADD_PARSER, payload: parser });
   };
 }

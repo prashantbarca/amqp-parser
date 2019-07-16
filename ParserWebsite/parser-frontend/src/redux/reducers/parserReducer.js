@@ -3,15 +3,14 @@ import { ActionTypes } from '../actions';
 
 const initialState = {
   all: [],
-  current: {},
 };
 
 const ParserReducer = (
   state = initialState, action,
 ) => {
   switch (action.type) {
-    case ActionTypes.ALL_PARSERS: {
-      return { ...state, all: action.payload };
+    case ActionTypes.ADD_PARSER: {
+      return { ...state, all: [...state.all, action.payload] };
     }
     default:
       return state;
