@@ -16,8 +16,8 @@ export function addParser(parserType) {
   return (dispatch) => {
     const parser = {
       name: '',
-      type: '',
-      bytes: parserType,
+      type: parserType,
+      bytes: '', // arguemnt, need validations for the functions
     };
     dispatch({ type: ActionTypes.ADD_PARSER, payload: parser });
   };

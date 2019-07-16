@@ -23,7 +23,7 @@ class ButtonPanel extends React.Component {
   }
 
   onPressCh = () => {
-    this.props.addParser('h.ch');
+    this.props.addParser('h.ch'); // needs to validated to check only 1 character
   }
 
   render() {
